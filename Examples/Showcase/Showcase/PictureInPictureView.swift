@@ -16,7 +16,7 @@ struct PictureInPictureView: View {
             Text(formatted)
                 .font(.system(size: 64, weight: .bold, design: .monospaced))
                 .foregroundColor(.white)
-                .fixedSize()
+                .minimumScaleFactor(0.1)
                 .padding()
         }
         .aspectRatio(16 / 9, contentMode: .fit)

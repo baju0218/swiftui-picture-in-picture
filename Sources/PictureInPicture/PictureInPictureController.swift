@@ -16,7 +16,7 @@ final class PictureInPictureController<Content: View>:
     private var canStartAutomaticallyFromInline: Bool
 
     // View
-    private let hostingController: UIHostingController<StretchView<Content>>
+    private let hostingController: UIHostingController<Content>
     private let contentViewController = AVPictureInPictureVideoCallViewController()
 
     var onStart: (() -> Void)?
@@ -28,10 +28,8 @@ final class PictureInPictureController<Content: View>:
 
     init(canStartAutomaticallyFromInline: Bool, content: Content) {
         self.canStartAutomaticallyFromInline = canStartAutomaticallyFromInline
-        self.hostingController = UIHostingController(
-            rootView: StretchView(content: content)
-        )
-        self.contentViewController.preferredContentSize = content.size
+        self.hostingController = UIHostingController(rootView: content)
+        self.contentViewController.preferredContentSize = hostingController.size
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -50,8 +48,8 @@ final class PictureInPictureController<Content: View>:
         self.controller?.canStartPictureInPictureAutomaticallyFromInline =
             canStartAutomaticallyFromInline
         self.canStartAutomaticallyFromInline = canStartAutomaticallyFromInline
-        self.hostingController.rootView = StretchView(content: content)
-        self.contentViewController.preferredContentSize = content.size
+        self.hostingController.rootView = content
+        self.contentViewController.preferredContentSize = hostingController.size
     }
 
     func start() {
