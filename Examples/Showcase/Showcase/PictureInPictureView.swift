@@ -1,8 +1,7 @@
-import Combine
 import SwiftUI
 
-struct TimerView: View {
-    @State private var seconds = 0
+struct PictureInPictureView: View {
+    let seconds: Int
 
     var body: some View {
         ZStack {
@@ -17,11 +16,10 @@ struct TimerView: View {
             Text(formatted)
                 .font(.system(size: 64, weight: .bold, design: .monospaced))
                 .foregroundColor(.white)
+                .fixedSize()
                 .padding()
         }
-        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
-            seconds += 1
-        }
+        .aspectRatio(16 / 9, contentMode: .fit)
     }
 
     private var formatted: String {

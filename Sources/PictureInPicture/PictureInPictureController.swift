@@ -6,23 +6,28 @@ final class PictureInPictureController<Content: View>:
     UIViewController,
     AVPictureInPictureControllerDelegate
 {
+    // Picture in Picture
+    private var controller: AVPictureInPictureController?
+    private var canStartAutomaticallyFromInline: Bool
+
+    // View
     private let hostingController: UIHostingController<StretchView<Content>>
     private let contentViewController = AVPictureInPictureVideoCallViewController()
-    private var pictureInPictureController: AVPictureInPictureController?
 
     var onStart: (() -> Void)?
     var onStop: (() -> Void)?
 
     var isActive: Bool {
-        pictureInPictureController?.isPictureInPictureActive ?? false
+        controller?.isPictureInPictureActive ?? false
     }
 
-    init(content: Content) {
+    init(canStartAutomaticallyFromInline: Bool, content: Content) {
+        self.canStartAutomaticallyFromInline = canStartAutomaticallyFromInline
         self.hostingController = UIHostingController(
             rootView: StretchView(content: content)
         )
+        self.contentViewController.preferredContentSize = content.size
         super.init(nibName: nil, bundle: nil)
-        contentViewController.preferredContentSize = content.size
     }
 
     required init?(coder: NSCoder) {
@@ -36,16 +41,19 @@ final class PictureInPictureController<Content: View>:
         setup()
     }
 
-    func update(content: Content) {
-        hostingController.rootView = StretchView(content: content)
+    func update(canStartAutomaticallyFromInline: Bool, content: Content) {
+        self.controller?.canStartPictureInPictureAutomaticallyFromInline =
+            canStartAutomaticallyFromInline
+        self.canStartAutomaticallyFromInline = canStartAutomaticallyFromInline
+        self.hostingController.rootView = StretchView(content: content)
     }
 
     func start() {
-        pictureInPictureController?.startPictureInPicture()
+        controller?.startPictureInPicture()
     }
 
     func stop() {
-        pictureInPictureController?.stopPictureInPicture()
+        controller?.stopPictureInPicture()
     }
 
     private func setup() {
@@ -55,9 +63,9 @@ final class PictureInPictureController<Content: View>:
     }
 
     private func setupContentView() {
-        contentViewController.addChild(hostingController)
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         hostingController.view.backgroundColor = .clear
+        contentViewController.addChild(hostingController)
         contentViewController.view.addSubview(hostingController.view)
         NSLayoutConstraint.activate([
             hostingController.view.topAnchor.constraint(
@@ -81,9 +89,10 @@ final class PictureInPictureController<Content: View>:
             activeVideoCallSourceView: view,
             contentViewController: contentViewController
         )
-        let pictureInPictureController = AVPictureInPictureController(contentSource: contentSource)
-        pictureInPictureController.delegate = self
-        self.pictureInPictureController = pictureInPictureController
+        controller = AVPictureInPictureController(contentSource: contentSource)
+        controller?.canStartPictureInPictureAutomaticallyFromInline =
+            canStartAutomaticallyFromInline
+        controller?.delegate = self
     }
 
     // MARK: - AVPictureInPictureControllerDelegate

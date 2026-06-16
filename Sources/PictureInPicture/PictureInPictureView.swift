@@ -3,12 +3,16 @@ import SwiftUI
 @available(iOS 15.0, *)
 struct PictureInPictureView<Content: View>: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
+    let canStartAutomaticallyFromInline: Bool
     let content: () -> Content
 
     func makeUIViewController(
         context: Context
     ) -> PictureInPictureController<Content> {
-        let uiViewController = PictureInPictureController(content: content())
+        let uiViewController = PictureInPictureController(
+            canStartAutomaticallyFromInline: canStartAutomaticallyFromInline,
+            content: content()
+        )
         let binding = $isPresented
         uiViewController.onStart = {
             if binding.wrappedValue != true {
@@ -27,7 +31,10 @@ struct PictureInPictureView<Content: View>: UIViewControllerRepresentable {
         _ uiViewController: PictureInPictureController<Content>,
         context: Context
     ) {
-        uiViewController.update(content: content())
+        uiViewController.update(
+            canStartAutomaticallyFromInline: canStartAutomaticallyFromInline,
+            content: content()
+        )
 
         if isPresented, !uiViewController.isActive {
             uiViewController.start()
