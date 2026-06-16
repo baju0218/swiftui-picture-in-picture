@@ -1,4 +1,5 @@
 import AVKit
+import OSLog
 import SwiftUI
 
 @available(iOS 15.0, *)
@@ -6,6 +7,10 @@ final class PictureInPictureController<Content: View>:
     UIViewController,
     AVPictureInPictureControllerDelegate
 {
+    private static var logger: Logger {
+        Logger(subsystem: "PictureInPicture", category: "PictureInPictureController")
+    }
+
     // Picture in Picture
     private var controller: AVPictureInPictureController?
     private var canStartAutomaticallyFromInline: Bool
@@ -57,7 +62,10 @@ final class PictureInPictureController<Content: View>:
     }
 
     private func setup() {
-        guard AVPictureInPictureController.isPictureInPictureSupported() else { return }
+        guard AVPictureInPictureController.isPictureInPictureSupported() else {
+            Self.logger.error("Picture in Picture is not supported on this device")
+            return
+        }
         setupContentView()
         setupPictureInPicture()
     }
@@ -107,5 +115,14 @@ final class PictureInPictureController<Content: View>:
         _ pictureInPictureController: AVPictureInPictureController
     ) {
         onStop?()
+    }
+
+    func pictureInPictureController(
+        _ pictureInPictureController: AVPictureInPictureController,
+        failedToStartPictureInPictureWithError error: Error
+    ) {
+        Self.logger.error(
+            "Failed to start Picture in Picture: \(error.localizedDescription, privacy: .public)"
+        )
     }
 }
