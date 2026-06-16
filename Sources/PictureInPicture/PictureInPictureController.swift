@@ -51,6 +51,7 @@ final class PictureInPictureController<Content: View>:
             canStartAutomaticallyFromInline
         self.canStartAutomaticallyFromInline = canStartAutomaticallyFromInline
         self.hostingController.rootView = StretchView(content: content)
+        self.contentViewController.preferredContentSize = content.size
     }
 
     func start() {
