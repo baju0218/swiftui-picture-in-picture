@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PictureInPictureView: View {
+struct TimerView: View {
     let seconds: Int
 
     var body: some View {

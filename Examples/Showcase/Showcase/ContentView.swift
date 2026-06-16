@@ -10,15 +10,15 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if #available(iOS 15.0, *) {
-                PictureInPictureView(seconds: seconds)
+                TimerView(seconds: seconds)
                     .pictureInPicture(
                         isPresented: $isPresented,
                         canStartAutomaticallyFromInline: canStartAutomaticallyFromInline
                     ) {
-                        PictureInPictureView(seconds: seconds)
+                        TimerView(seconds: seconds)
                     }
             } else {
-                PictureInPictureView(seconds: seconds)
+                TimerView(seconds: seconds)
             }
 
             Spacer()
