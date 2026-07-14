@@ -9,17 +9,12 @@ extension View {
     /// keeps that binding in sync when the user closes the overlay manually.
     ///
     /// ```swift
-    /// struct PlayerScreen: View {
-    ///     @State private var isPiP = false
-    ///
-    ///     var body: some View {
-    ///         PlayerView()
-    ///             .pictureInPicture(
-    ///                 isPresented: $isPiP,
-    ///                 canStartAutomaticallyFromInline: true
-    ///             ) {
-    ///                 PlayerOverlayContent()
-    ///             }
+    /// ContentView()
+    ///     .pictureInPicture(
+    ///         isPresented: $isPresented,
+    ///         canStartAutomaticallyFromInline: false
+    ///     ) {
+    ///         PictureInPictureView()
     ///     }
     /// }
     /// ```

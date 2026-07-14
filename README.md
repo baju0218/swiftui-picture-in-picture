@@ -1,58 +1,48 @@
 # swiftui-picture-in-picture
 
-Picture in Picture support for SwiftUI
+Picture in Picture for SwiftUI — GPU-rendered, with working animations.
+
+## Why
+
+Most SwiftUI PiP libraries snapshot the view every frame into `AVSampleBufferDisplayLayer`. That's CPU-heavy (device gets hot) and breaks SwiftUI animations.
+
+This library hosts the SwiftUI view directly inside `AVPictureInPictureVideoCallViewController`, so:
+
+- **GPU-composited** by CoreAnimation — no per-frame snapshotting, no heat.
+- **SwiftUI animations just work** — they render natively.
+
+## Usage
 
 ```swift
 import PictureInPicture
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isPiP = false
+    @State private var isPresented = false
 
     var body: some View {
-        VStack {
-            MainView()
-                .pictureInPicture(isPresented: $isPiP) {
-                    PiPView()
-                }
-
-            Toggle("Show Picture in Picture", isOn: $isPiP)
-        }
+        MainView()
+            .pictureInPicture(isPresented: $isPresented) {
+                PiPView()
+            }
     }
 }
 ```
 
-## Getting Started
+## Installation
 
-### Installation
-
-Add the package via Swift Package Manager.
+Swift Package Manager:
 
 ```swift
-dependencies: [
-    .package(url: "https://github.com/baju0218/swiftui-picture-in-picture", from: "0.1.0"),
-],
-targets: [
-    .target(
-        name: "YourTarget",
-        dependencies: [
-            .product(name: "PictureInPicture", package: "swiftui-picture-in-picture"),
-        ]
-    ),
-]
+.package(url: "https://github.com/baju0218/swiftui-picture-in-picture", from: "1.0.0")
 ```
 
-### Configuration
+## Setup
 
-A few things to keep in mind when integrating the library.
-
-1. **Enable Background Mode** — In **Signing & Capabilities**, add **Background Modes** and check **Audio, AirPlay, and Picture in Picture**.
-
-2. **Configure `AVAudioSession`** — Activate a category that supports background playback (`.playback` or `.playAndRecord`) at app startup. `.ambient` and `.soloAmbient` will prevent it from starting.
-
+1. **Background Modes** → enable *Audio, AirPlay, and Picture in Picture*.
+2. Activate an `AVAudioSession` category that supports background playback at launch:
    ```swift
    try AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
    try AVAudioSession.sharedInstance().setActive(true)
    ```
-
-3. **Check device support** — Gate PiP UI with `AVPictureInPictureController.isPictureInPictureSupported()`. Not available in the iOS Simulator.
+3. PiP is unavailable in the Simulator — gate on `AVPictureInPictureController.isPictureInPictureSupported()`.
