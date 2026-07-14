@@ -6,12 +6,12 @@ import PackageDescription
 let package = Package(
     name: "swiftui-picture-in-picture",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v15)
     ],
     products: [
-        .library(name: "PictureInPicture", targets: ["PictureInPicture"]),
+        .library(name: "PictureInPicture", targets: ["PictureInPicture"])
     ],
     targets: [
-        .target(name: "PictureInPicture", path: "Sources/PictureInPicture"),
+        .target(name: "PictureInPicture", path: "Sources/PictureInPicture")
     ]
 )
